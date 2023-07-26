@@ -38,3 +38,8 @@ body {
 .cell:hover {
     background-color: grey;
 }
+
+
+.toggle-on {
+    background-color: aqua;
+}
