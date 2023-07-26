@@ -20,9 +20,15 @@ function drawGrid(gridDimension) {
             gridDiv.appendChild(cellDiv);
 
             cellDiv.addEventListener('click', () => {
+                if (isButtonOn(colorPickerButton)) {
+                    const convertedHex = rgbToHex(cellDiv.style.backgroundColor); // Color selector element only accepts hexadecimal colors
+                    console.log(convertedHex);
+                    colorSelector.value = convertedHex; // TODO convertedHex is null when cell is empty.
+                    return;
+                }
                 penColor = colorSelector.value;
                 cellDiv.style.backgroundColor = penColor;
-                if (rainbowButton.classList.contains("toggle-on")) {
+                if (isButtonOn(rainbowButton)) {
                     penColor = getRandomColor();
                     colorSelector.value = penColor;
                 }
@@ -36,9 +42,9 @@ const colorSelector = document.querySelector("input#color-selector");
 const eraserButton = document.querySelector(".bt#eraser");
 let previousColor = colorSelector.value;
 eraserButton.addEventListener('click', () => {
-    resetToggleButtons();
-    eraserButton.classList.toggle("toggle-on");
-    if (eraserButton.classList.contains("toggle-on")) {
+    resetToggleButtonsExcept(eraserButton);
+    toggleButton(eraserButton);
+    if (isButtonOn(eraserButton)) {
         previousColor = colorSelector.value;
         penColor = "#ffffff";
         colorSelector.value = "#ffffff"
@@ -52,9 +58,9 @@ eraserButton.addEventListener('click', () => {
 
 const rainbowButton = document.querySelector(".bt#rainbow");
 rainbowButton.addEventListener('click', () => {
-    resetToggleButtons();
-    rainbowButton.classList.toggle("toggle-on");
-    if (rainbowButton.classList.contains("toggle-on")) {
+    resetToggleButtonsExcept(rainbowButton);
+    toggleButton(rainbowButton);
+    if (isButtonOn(rainbowButton)) {
         penColor = getRandomColor();
         colorSelector.value = penColor;
     }
@@ -69,13 +75,51 @@ const getRandomColor = () => {
     return randomColor;
 };
 
-const toggleButtons = [eraserButton, rainbowButton]; // TODO Add other buttons as needed
-const resetToggleButtons = () => {
+const colorPickerButton = document.querySelector(".bt#color-picker");
+colorPickerButton.addEventListener("click", () => {
+    resetToggleButtonsExcept(colorPickerButton);
+    toggleButton(colorPickerButton);
+});
+
+
+const toggleButtons = [eraserButton, rainbowButton, colorPickerButton]; // TODO Add other buttons as needed
+
+/*
+Helper methods
+*/
+const resetToggleButtonsExcept = (onButton) => {
     toggleButtons.forEach(button => {
-        if (button.classList.contains("toggle-on")) {
+        if (button !== onButton && button.classList.contains("toggle-on")) {
             button.click();
         }
     });
 }
+
+function rgbToHex(rgb) {
+    const regexResult = rgb.match(/\d+/g);
+    if (!regexResult || regexResult.length !== 3) {
+      // Invalid RGB format
+      return null;
+    }
+  
+    const r = parseInt(regexResult[0], 10);
+    const g = parseInt(regexResult[1], 10);
+    const b = parseInt(regexResult[2], 10);
+  
+    const hexColor = '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+    return hexColor;
+  }
+  
+
+function isButtonOn(button) {
+    return button.classList.contains("toggle-on");
+}
+
+function toggleButton(button) {
+    button.classList.toggle("toggle-on");
+}
+
+
+  
 
 drawGrid(gridDimension);
