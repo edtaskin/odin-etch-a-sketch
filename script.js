@@ -22,6 +22,10 @@ function drawGrid(gridDimension) {
             cellDiv.addEventListener('click', () => {
                 penColor = colorSelector.value;
                 cellDiv.style.backgroundColor = penColor;
+                if (rainbowButton.classList.contains("toggle-on")) {
+                    penColor = getRandomColor();
+                    colorSelector.value = penColor;
+                }
             });
         }
     }
@@ -32,7 +36,7 @@ const colorSelector = document.querySelector("input#color-selector");
 const eraserButton = document.querySelector(".bt#eraser");
 let previousColor = colorSelector.value;
 eraserButton.addEventListener('click', () => {
-    console.log(previousColor);
+    resetToggleButtons();
     eraserButton.classList.toggle("toggle-on");
     if (eraserButton.classList.contains("toggle-on")) {
         previousColor = colorSelector.value;
@@ -46,5 +50,32 @@ eraserButton.addEventListener('click', () => {
 });
 
 
+const rainbowButton = document.querySelector(".bt#rainbow");
+rainbowButton.addEventListener('click', () => {
+    resetToggleButtons();
+    rainbowButton.classList.toggle("toggle-on");
+    if (rainbowButton.classList.contains("toggle-on")) {
+        penColor = getRandomColor();
+        colorSelector.value = penColor;
+    }
+});
+
+const getRandomColor = () => {
+    const hexadecimal = "0123456789ABCDEF";
+    let randomColor = "#";
+    for (let i = 0; i < 6; i++) {
+        randomColor += hexadecimal.charAt(Math.random() * 16);
+    }
+    return randomColor;
+};
+
+const toggleButtons = [eraserButton, rainbowButton]; // TODO Add other buttons as needed
+const resetToggleButtons = () => {
+    toggleButtons.forEach(button => {
+        if (button.classList.contains("toggle-on")) {
+            button.click();
+        }
+    });
+}
 
 drawGrid(gridDimension);
