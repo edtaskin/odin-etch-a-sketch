@@ -22,8 +22,11 @@ function drawGrid(gridDimension) {
             cellDiv.addEventListener('click', () => {
                 if (isButtonOn(colorPickerButton)) {
                     const convertedHex = rgbToHex(cellDiv.style.backgroundColor); // Color selector element only accepts hexadecimal colors
-                    console.log(convertedHex);
-                    colorSelector.value = convertedHex; // TODO convertedHex is null when cell is empty.
+                    if (!convertedHex) {
+                        return;
+                    }
+                    colorSelector.value = convertedHex; 
+                    toggleSingleButton(colorPickerButton);
                     return;
                 }
                 penColor = colorSelector.value;
@@ -93,6 +96,10 @@ const resetToggleButtonsExcept = (onButton) => {
             button.click();
         }
     });
+}
+
+const toggleSingleButton = (button) => {
+    button.classList.toggle("toggle-on");
 }
 
 function rgbToHex(rgb) {
