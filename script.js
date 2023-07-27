@@ -29,11 +29,7 @@ function drawGrid(gridDimension) {
             cellDiv.classList.add("cell");
             gridArray.push(cellDiv);
             gridDiv.appendChild(cellDiv);
-
-            //cellDiv.addEventListener('click', paintCell);
             cellDiv.addEventListener('mouseover', paintCell);
-            //cellDiv.addEventListener('mousedown', paintCell);
-
         }
     }
 }
@@ -87,6 +83,15 @@ rainbowButton.addEventListener('click', () => {
         colorSelector.value = penColor;
     }
 });
+
+const clearButton = document.querySelector(".bt#clear");
+clearButton.addEventListener('click', () => {
+    clearGrid();
+})
+
+function clearGrid() {
+    gridArray.forEach(cell => cell.style.backgroundColor = "#ffffff");
+}
 
 const getRandomColor = () => {
     const hexadecimal = "0123456789ABCDEF";
