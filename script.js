@@ -7,6 +7,17 @@ let gridDimension = 16;
 const getCellSize = () => SKETCH_CONTAINER_SIZE / gridDimension; 
 let penColor = "black";
 
+
+let mouseDown = false;
+document.body.onmousedown = () => {
+    console.log("mouse down");
+    mouseDown = true;
+};
+document.body.onmouseup = () => {
+    console.log("mouse up");
+    mouseDown = false;
+};
+
 function drawGrid(gridDimension) {
     const cellSize = getCellSize();
     for (let i = 0; i < gridDimension; i++) {
@@ -19,27 +30,35 @@ function drawGrid(gridDimension) {
             gridArray.push(cellDiv);
             gridDiv.appendChild(cellDiv);
 
-            cellDiv.addEventListener('click', () => {
-                if (isButtonOn(colorPickerButton)) {
-                    const convertedHex = rgbToHex(cellDiv.style.backgroundColor); // Color selector element only accepts hexadecimal colors
-                    if (!convertedHex) {
-                        return;
-                    }
-                    colorSelector.value = convertedHex; 
-                    toggleSingleButton(colorPickerButton);
-                    return;
-                }
-                penColor = colorSelector.value;
-                cellDiv.style.backgroundColor = penColor;
-                if (isButtonOn(rainbowButton)) {
-                    penColor = getRandomColor();
-                    colorSelector.value = penColor;
-                }
-            });
+            //cellDiv.addEventListener('click', paintCell);
+            cellDiv.addEventListener('mouseover', paintCell);
+            //cellDiv.addEventListener('mousedown', paintCell);
+
         }
     }
 }
 
+// TODO Rewrite
+function paintCell(e) {
+    console.log(mouseDown);
+    if (!mouseDown) return;
+
+    if (isButtonOn(colorPickerButton)) {
+        const convertedHex = rgbToHex(e.target.style.backgroundColor); // Color selector element only accepts hexadecimal colors
+        if (!convertedHex) {
+            return;
+        }
+        colorSelector.value = convertedHex; 
+        toggleSingleButton(colorPickerButton);
+        return;
+    }
+    penColor = colorSelector.value;
+    e.target.style.backgroundColor = penColor;
+    if (isButtonOn(rainbowButton)) {
+        penColor = getRandomColor();
+        colorSelector.value = penColor;
+    }
+}
 
 const colorSelector = document.querySelector("input#color-selector");
 const eraserButton = document.querySelector(".bt#eraser");
